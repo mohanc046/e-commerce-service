@@ -27,8 +27,8 @@ const getProductsWithCategoryAndPriceFilter = (primaryCategory, secondaryCategor
   return db('products_list')
     .where('Cat1_Id', `${primaryCategory}`)
     .where('Cat2_Id', `${secondaryCategory}`)
-    .where('Price', '>=' `${minPrice}`)
-    .where('Price', '<=' `${maxPrice}`)
+    .where('Price', '>=', `${minPrice}`)
+    .where('Price', '<=', `${maxPrice}`)
     .select(
       'products_list.Product_name as productName',
       'products_list.image_name as imagePath',
@@ -49,8 +49,8 @@ const getProductsWithPrimaryFilters = (primaryCategory) => {
 const getProductsWithPrimaryAndPriceFilters = (primaryCategory, { minPrice, maxPrice }) => {
   return db('products_list')
     .where('Cat1_Id', `${primaryCategory}`)
-    .where('Price', '>=' `${minPrice}`)
-    .where('Price', '<=' `${maxPrice}`)
+    .where('Price', '>=', `${minPrice}`)
+    .where('Price', '<=', `${maxPrice}`)
     .select(
       'products_list.Product_name as productName',
       'products_list.image_name as imagePath',
@@ -71,8 +71,8 @@ const getProductsWithSecondaryFilters = (secondaryCategory) => {
 const getProductsWithSecondaryAndPriceFilters = (secondaryCategory, { minPrice, maxPrice }) => {
   return db('products_list')
     .where('Cat2_Id', `${secondaryCategory}`)
-    .where('Price', '>=' `${minPrice}`)
-    .where('Price', '<=' `${maxPrice}`)
+    .where('Price', '>=', `${minPrice}`)
+    .where('Price', '<=', `${maxPrice}`)
     .select(
       'products_list.Product_name as productName',
       'products_list.image_name as imagePath',
@@ -82,8 +82,8 @@ const getProductsWithSecondaryAndPriceFilters = (secondaryCategory, { minPrice, 
 
 const getProductsWithPriceFilters = ({ minPrice, maxPrice }) => {
   return db('products_list')
-    .where('Price', '>=' `${minPrice}`)
-    .where('Price', '<=' `${maxPrice}`)
+    .where('Price', '>=', `${minPrice}`)
+    .where('Price', '<=', `${maxPrice}`)
     .select(
       'products_list.Product_name as productName',
       'products_list.image_name as imagePath',
@@ -93,7 +93,7 @@ const getProductsWithPriceFilters = ({ minPrice, maxPrice }) => {
 
 const getProductsWithProductNameSearch = (searchText) => {
   return db('products_list')
-    .where('Product_name', 'ilike' `%${searchText}%`)
+    .whereILike('Product_name', `%${searchText}%`)
     .select(
       'products_list.Product_name as productName',
       'products_list.image_name as imagePath',
@@ -103,7 +103,7 @@ const getProductsWithProductNameSearch = (searchText) => {
 
 const getProductsWithCatalogueNameSearch = (searchText) => {
   return db('products_list')
-    .where('Catalogue_name', 'ilike' `%${searchText}%`)
+    .whereILike('Catalogue_name', `%${searchText}%`)
     .select(
       'products_list.Product_name as productName',
       'products_list.image_name as imagePath',
