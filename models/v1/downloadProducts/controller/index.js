@@ -6,6 +6,8 @@ const { config } = require('../../../../utils/constant');
 
 const downloadProductService = require('../service/index');
 
+const { getExecutionTypeForProductList } = require("../../../../utils");
+
 const { statusCode: { FAILED, SUCCESS } } = config;
 
 module.exports.getAllCategory = async (req, res) => {
@@ -23,25 +25,9 @@ module.exports.getProductList = async (req, res) => {
 
   const { body } = req;
 
-  const { primaryCategory = "", secondaryCategory = "" } = body;
+  let executionType = getExecutionTypeForProductList(body)
 
-  let productList;
-
-  let isPrimaryCategoryNotEmpty = !_.isEmpty(primaryCategory);
-
-  let isSecondaryCategoryNotEmpty = !_.isEmpty(secondaryCategory);
-
-  if (isPrimaryCategoryNotEmpty && isSecondaryCategoryNotEmpty) {
-    productList = await downloadProductService.getProductsWithBothFilters(primaryCategory, secondaryCategory)
-  }
-  else if (isPrimaryCategoryNotEmpty) {
-    productList = await downloadProductService.getProductsWithPrimaryFilters(primaryCategory)
-  }
-  else if (isSecondaryCategoryNotEmpty) {
-    productList = await downloadProductService.getProductsWithSecondaryFilters(secondaryCategory)
-  } else {
-    productList = []
-  }
+  let productList = await downloadProductService.executeQueryBasedOnType({ ...body, executionType })
 
   return res.status(StatusCodes.OK).json({ statusCode: SUCCESS, productList })
 
