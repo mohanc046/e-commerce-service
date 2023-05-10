@@ -5,7 +5,8 @@ const getExecutionTypeForProductList = ({
   secondaryCategory = "",
   isProductSearch = false,
   isCategorySearch = false,
-  selectedPricing = {}
+  selectedPricing = {},
+  selectedCatalogueName = ""
 }) => {
 
   let executionType = "";
@@ -18,7 +19,7 @@ const getExecutionTypeForProductList = ({
 
   if (isProductSearch) {
     executionType = "PRODUCT_NAME_FILTER";
-  } else if (isCategorySearch) {
+  } else if (!_.isEmpty(selectedCatalogueName)) {
     executionType = "CATALOGUE_NAME_FILTER";
   } else if (isPrimaryCategoryNotEmpty && isSecondaryCategoryNotEmpty && isPricingFilterNotEmpty) {
     executionType = "CATEGORY_WITH_PRICING_FILTER";
@@ -41,4 +42,27 @@ const getExecutionTypeForProductList = ({
   return executionType;
 }
 
-module.exports = { getExecutionTypeForProductList }
+const getUpdatedSecondaryCategoryList = (category2, formulaeList) => {
+
+  let updatedList = [];
+
+  category2.map(item => {
+
+    let uniqueId = _.get(item, 'S.No');
+
+    let categoryName = _.get(item, 'Category2');
+
+    let primaryCategory = formulaeList.find(list => _.get(list, 'Cat2 _id') == uniqueId);
+
+    updatedList.push({
+      'S.No': uniqueId,
+      Category2: categoryName,
+      primaryCategory: _.get(primaryCategory, 'Cat1_id')
+    })
+
+  })
+
+  return updatedList;
+}
+
+module.exports = { getExecutionTypeForProductList, getUpdatedSecondaryCategoryList }

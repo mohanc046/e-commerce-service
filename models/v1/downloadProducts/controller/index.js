@@ -6,7 +6,7 @@ const { config } = require('../../../../utils/constant');
 
 const downloadProductService = require('../service/index');
 
-const { getExecutionTypeForProductList } = require("../../../../utils");
+const { getExecutionTypeForProductList, getUpdatedSecondaryCategoryList } = require("../../../../utils");
 
 const { statusCode: { FAILED, SUCCESS } } = config;
 
@@ -16,7 +16,17 @@ module.exports.getAllCategory = async (req, res) => {
 
   const category2 = await downloadProductService.getSecondaryCategory();
 
-  return res.status(StatusCodes.OK).json({ statusCode: SUCCESS, category1, category2 })
+  const formulaeList = await downloadProductService.getFormulae();
+
+  const productList = await downloadProductService.getAllCatalogue();
+
+  let updatedSecondaryCategoryList = getUpdatedSecondaryCategoryList(category2, formulaeList);
+
+  let catalogueList = _.map(productList, (item) => `${_.get(item, 'Catalogue_name')}`.trim());
+
+  let uniqueCatalogueList = _.uniq(catalogueList);
+
+  return res.status(StatusCodes.OK).json({ statusCode: SUCCESS, category1, category2: updatedSecondaryCategoryList, catalogueList: uniqueCatalogueList, formulaeList })
 
 }
 

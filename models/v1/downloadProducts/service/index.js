@@ -1,5 +1,10 @@
 const db = require('../../../../connection/db/index');
 
+
+const getFormulae = () => {
+  return db('formula').select();
+}
+
 const getPrimaryCategory = () => {
   return db('cat1').select().where("status", "!=", "0");
 }
@@ -10,6 +15,10 @@ const getSecondaryCategory = () => {
 
 const getAllProducts = () => {
   return db('products_list').select().where("status", "!=", "0");
+}
+
+const getAllCatalogue = () => {
+  return db('products_list').select()
 }
 
 const getProductsWithBothFilters = (primaryCategory, secondaryCategory) => {
@@ -103,7 +112,7 @@ const getProductsWithProductNameSearch = (searchText) => {
 
 const getProductsWithCatalogueNameSearch = (searchText) => {
   return db('products_list')
-    .whereILike('Catalogue_name', `%${searchText}%`)
+    .whereILike('Catalogue_name', `${searchText}`)
     .select(
       'products_list.Product_name as productName',
       'products_list.image_name as imagePath',
@@ -120,7 +129,8 @@ const executeQueryBasedOnType = async (query) => {
     secondaryCategory = "",
     searchText = "",
     selectedPricing = {},
-    executionType
+    executionType,
+    selectedCatalogueName
   } = query;
 
   switch (executionType) {
@@ -144,7 +154,7 @@ const executeQueryBasedOnType = async (query) => {
 
       break;
 
-    case 'CATALOGUE_NAME_FILTER': productList = await getProductsWithCatalogueNameSearch(searchText);
+    case 'CATALOGUE_NAME_FILTER': productList = await getProductsWithCatalogueNameSearch(selectedCatalogueName);
       break;
 
     case 'PRIMARY_CATEGORY_WITH_PRICING_FILTER': productList = await getProductsWithPrimaryAndPriceFilters(primaryCategory, {
@@ -179,5 +189,7 @@ module.exports = {
   getProductsWithPrimaryFilters,
   getProductsWithSecondaryFilters,
   executeQueryBasedOnType,
-  getAllProducts
+  getAllProducts,
+  getAllCatalogue,
+  getFormulae
 }
