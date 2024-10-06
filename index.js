@@ -20,7 +20,7 @@ app.use(cookieParser());
 
 app.use(helmet())
 
-const PORT = FIXED_VALUES.PORT;
+const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}...`);
